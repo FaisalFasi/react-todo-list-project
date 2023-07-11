@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Task from "./Task";
 import i18n from "./i18n.json";
+import { v4 as uuidv4 } from "uuid";
+
 // const SortOptions = {
 //   English: "NEWEST_FIRST",
 //   Urdu: "OLDEST_FIRST",
@@ -8,7 +10,7 @@ import i18n from "./i18n.json";
 //   French: "ALPHABETICAL_REVERSE",
 // };
 const LangEnum = Object.keys(i18n);
-console.log(LangEnum);
+
 const SortOptions = {
   NEWEST_FIRST: "NEWEST_FIRST",
   OLDEST_FIRST: "OLDEST_FIRST",
@@ -17,39 +19,39 @@ const SortOptions = {
 };
 
 export default function Todo() {
+  // localStorage.clear();
+  const [userSelectedLanguage, setUserSelectedLanguage] = useState("EN");
   const [userSelectedSortOption, setUserSelectedSortOption] = useState(
     SortOptions.NEWEST_FIRST
   );
 
-  const [userSelectedLanguage, setUserSelectedLanguage] = useState("EN");
-
-  const [inputValue, setInputValue] = useState({
-    todoTask: "",
-    isCompleted: false,
+  const [tasksList, setTasksList] = useState(() => {
+    const localData = localStorage.getItem("tasks");
+    return localData ? JSON.parse(localData) : [];
   });
-  const [newTaskArray, setNewTaskArray] = useState(
-    JSON.parse(localStorage.getItem("tasks"))
-  );
+
+  const [userInputValue, setUserInputValue] = useState("");
 
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(newTaskArray));
-  }, [newTaskArray]);
+    localStorage.setItem("tasks", JSON.stringify(tasksList));
+  }, [tasksList]);
 
   const addTaskHandler = () => {
-    setNewTaskArray([
-      ...newTaskArray,
-      { ...inputValue, createdAt: new Date() },
-    ]);
-    setInputValue({
-      todoTask: "",
+    const newItem = {
+      todoText: userInputValue,
       isCompleted: false,
-    });
+      createdAt: new Date(),
+      id: uuidv4(),
+    };
+    setTasksList((prev) => [...prev, newItem]);
+
+    setUserInputValue("");
   };
 
-  const handleCheckboxChange = (index) => {
-    setNewTaskArray((prevTasks) =>
-      prevTasks.map((task, i) => {
-        if (i === index) {
+  const checkboxChangeHandler = (_id) => {
+    setTasksList((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === _id) {
           return {
             ...task,
             isCompleted: !task.isCompleted,
@@ -59,13 +61,13 @@ export default function Todo() {
       })
     );
   };
-  const deleteTaskHandler = (index) => {
-    const filteredArray = newTaskArray.filter((_, idx) => idx !== index);
-    setNewTaskArray(filteredArray);
+  const deleteTaskHandler = (_id) => {
+    const filteredTasksList = tasksList.filter((task) => task.id !== _id);
+    setTasksList(filteredTasksList);
   };
-  useEffect(() => {
-    console.log(newTaskArray);
-  }, [newTaskArray]);
+  // useEffect(() => {
+  //   console.log(tasksList);
+  // }, [tasksList]);
 
   return (
     <div>
@@ -105,10 +107,8 @@ export default function Todo() {
             type="text"
             placeholder="Add your new todo"
             className="w-full p-4 text-xl font-medium"
-            value={inputValue.todoTask}
-            onChange={(e) =>
-              setInputValue({ todoTask: e.target.value, isCompleted: false })
-            }
+            value={userInputValue}
+            onChange={(e) => setUserInputValue(e.target.value)}
           />
 
           <button
@@ -118,10 +118,9 @@ export default function Todo() {
             +
           </button>
         </div>
-
         <div>
-          {newTaskArray
-            .sort((a, b) => {
+          {tasksList
+            ?.sort((a, b) => {
               switch (userSelectedSortOption) {
                 case SortOptions.NEWEST_FIRST:
                   return new Date(b.createdAt) - new Date(a.createdAt);
@@ -145,13 +144,13 @@ export default function Todo() {
                   return 0;
               }
             })
-            .map((task, index) => {
+            .map((task) => {
               return (
                 <Task
-                  key={index}
-                  id={index}
+                  key={task.id}
+                  id={task.id}
                   task={task}
-                  onCheckboxChange={handleCheckboxChange}
+                  onCheckboxChange={checkboxChangeHandler}
                   deleteTaskHandler={deleteTaskHandler}
                 />
               );

@@ -45,7 +45,7 @@ export default function Task({
           task.isCompleted ? "line-through" : ""
         }`}
       >
-        {task.todoTask}
+        {task.todoText}
       </p>
 
       <div className="flex gap-4 justify-center items-center p-4 bg-purple-700 text-white">
