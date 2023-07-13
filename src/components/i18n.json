@@ -3,30 +3,35 @@
     "NEWEST_FIRST": "Newest first",
     "OLDEST_FIRST": "Oldest first",
     "ALPHABETICAL": "Alphabetical",
-    "ALPHABETICAL_REVERSE": "Alphabetical reverse"
+    "ALPHABETICAL_REVERSE": "Alphabetical reverse",
+    "flagEmoji": "🇺🇸"
   },
   "UR": {
     "NEWEST_FIRST": "تازہ ترین پہلے",
     "OLDEST_FIRST": "سب سے پہلے",
     "ALPHABETICAL": "حروف تہجی کے ترتیب کے مطابق",
-    "ALPHABETICAL_REVERSE": "حروف تہجی کے الٹ ترتیب کے مطابق"
+    "ALPHABETICAL_REVERSE": "حروف تہجی کے الٹ ترتیب کے مطابق",
+    "flagEmoji": "🇵🇰"
   },
   "DE": {
     "NEWEST_FIRST": "Neueste zuerst",
     "OLDEST_FIRST": "Älteste zuerst",
     "ALPHABETICAL": "Alphabetisch",
-    "ALPHABETICAL_REVERSE": "Alphabetisch umgekehrt"
+    "ALPHABETICAL_REVERSE": "Alphabetisch umgekehrt",
+    "flagEmoji": "🇩🇪"
   },
   "FR": {
     "NEWEST_FIRST": "Le plus récent d'abord",
     "OLDEST_FIRST": "Le plus ancien d'abord",
     "ALPHABETICAL": "Alphabétique",
-    "ALPHABETICAL_REVERSE": "Alphabétique inverse"
+    "ALPHABETICAL_REVERSE": "Alphabétique inverse",
+    "flagEmoji": "🇫🇷"
   },
   "ES": {
     "NEWEST_FIRST": "Lo más nuevo primero",
     "OLDEST_FIRST": "Lo más antiguo primero",
     "ALPHABETICAL": "Alfabético",
-    "ALPHABETICAL_REVERSE": "Alfabético inverso"
+    "ALPHABETICAL_REVERSE": "Alfabético inverso",
+    "flagEmoji": "🇪🇸"
   }
 }

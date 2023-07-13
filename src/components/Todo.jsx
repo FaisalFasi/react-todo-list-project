@@ -1,14 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Task from "./Task";
 import i18n from "./i18n.json";
 import { v4 as uuidv4 } from "uuid";
-
-// const SortOptions = {
-//   English: "NEWEST_FIRST",
-//   Urdu: "OLDEST_FIRST",
-//   Deutsch: "ALPHABETICAL",
-//   French: "ALPHABETICAL_REVERSE",
-// };
+import { TaskListContext } from "../contexts/ContextProvider";
 const LangEnum = Object.keys(i18n);
 
 const SortOptions = {
@@ -20,17 +14,26 @@ const SortOptions = {
 
 export default function Todo() {
   // localStorage.clear();
+  const { tasksList, setTasksList } = useContext(TaskListContext);
+
   const [userSelectedLanguage, setUserSelectedLanguage] = useState("EN");
   const [userSelectedSortOption, setUserSelectedSortOption] = useState(
     SortOptions.NEWEST_FIRST
   );
 
-  const [tasksList, setTasksList] = useState(() => {
-    const localData = localStorage.getItem("tasks");
-    return localData ? JSON.parse(localData) : [];
-  });
-
   const [userInputValue, setUserInputValue] = useState("");
+
+  useEffect(() => {
+    setTasksList(() => {
+      try {
+        const localData = localStorage.getItem("tasks");
+        return localData ? JSON.parse(localData) : [];
+      } catch (e) {
+        console.log(e);
+        return [];
+      }
+    });
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasksList));
@@ -43,9 +46,29 @@ export default function Todo() {
       createdAt: new Date(),
       id: uuidv4(),
     };
-    setTasksList((prev) => [...prev, newItem]);
 
+    setTasksList((prev) => [...prev, newItem]);
     setUserInputValue("");
+  };
+
+  const updateTaskHandler = (value, _id) => {
+    //* update task by set function
+    setTasksList((prevTask) => {
+      const updateTask = [...prevTask];
+      return updateTask.map((task) => {
+        if (task.id === _id) return { ...task, todoText: value };
+        return task;
+      });
+    });
+
+    //* update task by getting all previous values
+
+    // const prevTaskList = [...tasksList];
+    // const updatedTask = prevTaskList.map((task) => {
+    //   if (task.id === _id) return { ...task, todoText: value };
+    //   return task;
+    // });
+    // setTasksList(updatedTask);
   };
 
   const checkboxChangeHandler = (_id) => {
@@ -65,16 +88,11 @@ export default function Todo() {
     const filteredTasksList = tasksList.filter((task) => task.id !== _id);
     setTasksList(filteredTasksList);
   };
-  // useEffect(() => {
-  //   console.log(tasksList);
-  // }, [tasksList]);
 
   return (
-    <div>
-      <div className=" w-1/2  m-auto mt-16 p-4 bg-gray-200 ">
-        <h1 className=" font-bold font-serif text-3xl text-black  ">
-          Todo App
-        </h1>
+    <div className="h-screen flex justify-center items-center">
+      <div className="w-full sm:w-4/5 h-full md:h-4/5 p-4 bg-gray-300 overflow-auto">
+        <h1 className="font-bold font-serif text-3xl text-black">Todo App</h1>
 
         <div>
           <select
@@ -95,7 +113,6 @@ export default function Todo() {
           >
             {Object.keys(SortOptions).map((key) => (
               <option key={key} value={SortOptions[key]}>
-                {/* {SortOptions.NEWEST_FIRST} */}
                 {i18n[userSelectedLanguage][key]}
               </option>
             ))}
@@ -110,15 +127,14 @@ export default function Todo() {
             value={userInputValue}
             onChange={(e) => setUserInputValue(e.target.value)}
           />
-
           <button
-            className="py-4 px-6  bg-purple-800 text-white  font-semibold text-4xl hover:bg-purple-500 hover:text-black"
+            className={`py-4 px-6  bg-purple-800 text-white  font-semibold text-4xl hover:bg-purple-500 hover:text-black `}
             onClick={() => addTaskHandler()}
           >
             +
           </button>
         </div>
-        <div>
+        <div className="bg-gray-100 mt-4 p-2 ">
           {tasksList
             ?.sort((a, b) => {
               switch (userSelectedSortOption) {
@@ -128,11 +144,12 @@ export default function Todo() {
                   return new Date(a.createdAt) - new Date(b.createdAt);
                 case SortOptions.ALPHABETICAL:
                   if (a.todoTask < b.todoTask) {
-                    return -1;
-                  }
-                  if (a.todoTask > b.todoTask) {
                     return 1;
                   }
+                  if (a.todoTask > b.todoTask) {
+                    return -1;
+                  }
+
                   return 0;
                 case SortOptions.ALPHABETICAL_REVERSE:
                   if (b.todoTask < a.todoTask) {
@@ -152,6 +169,7 @@ export default function Todo() {
                   task={task}
                   onCheckboxChange={checkboxChangeHandler}
                   deleteTaskHandler={deleteTaskHandler}
+                  updateTaskHandler={updateTaskHandler}
                 />
               );
             })}
