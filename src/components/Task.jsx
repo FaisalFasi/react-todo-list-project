@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
@@ -10,20 +12,12 @@ export default function Task({
   deleteTaskHandler,
   updateTaskHandler,
 }) {
-  console.log();
   const [isEditable, setIsEditabel] = useState(true);
-  const [taskUpdating, setTaskUpdating] = useState(task.todoText);
+  const [taskUpdating, setTaskUpdating] = useState(task.todoText.trim());
   const paragraphRef = useRef(null);
-  // const [textareaValue, setTextareaValue] = useState();
-
-  const handleGetValue = () => {
-    console.log(paragraphRef.current.value);
-    // Do something with the textarea value
-  };
 
   const editHandler = () => {
     setIsEditabel(false);
-    // updateTaskHandler(id);
   };
   const checkBoxHandler = () => {
     onCheckboxChange(id);
@@ -38,18 +32,29 @@ export default function Task({
 
   useEffect(() => {
     const textareaElement = paragraphRef.current;
-    // textareaElement.style.height = "auto"; // Reset the height to auto
-    textareaElement.style.height = `${textareaElement.scrollHeight}px`; // Set the height to fit the content
+
+    textareaElement.style.height = `${textareaElement.scrollHeight}px`;
+    // Set the height to fit the content
   }, [taskUpdating]);
 
   return (
-    <div className="flex  gap-4 mt-4">
-      <input
-        type="checkbox"
-        className="w8"
-        checked={task.isCompleted}
-        onChange={checkBoxHandler}
-      />
+    <div className="flex gap-4 my-4  ">
+      <label className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          className="hidden" // Hide the default checkbox
+          checked={task.isCompleted}
+          onChange={checkBoxHandler}
+        />
+        <div
+          className={`w-5 h-5 border rounded ${
+            task.isCompleted
+              ? "bg-green-500 border-green-500"
+              : "bg-red-600 border-gray-400"
+          }`}
+        ></div>
+      </label>
+
       <textarea
         ref={paragraphRef}
         value={taskUpdating}
@@ -62,29 +67,15 @@ export default function Task({
           setIsEditabel(true);
           updateTaskHandler(taskUpdating, id);
         }}
-        className={`w-full resize-none  pl-4 py-auto text-lg bg-gray-300 focus:outline-blue-500 ${
+        className={`w-full resize-none rounded  px-4 py-4 bg-[#b9dcf2] focus:outline-blue-500 shadow-sm shadow-green-500 text-blue-700 text-xl  ${
           task.isCompleted ? "line-through" : ""
         }`}
-        // style={{ padding: "25px 0" }}
+        style={{
+          height: "40px",
+        }}
       />
 
-      {/* <testarea
-        ref={paragraphRef}
-        contentEditable={isEditable}
-        suppressContentEditableWarning={true}
-        autoFocus
-        onChange={(e) => setTaskUpdating(e.target.value)}
-        // onBlur={handleBlur}
-        // onChange={(e) => setUpdateValue(e.target.value)}
-        onBlur={() => setIsEditabel(false)}
-        className={`w-full p-4 text-lg bg-gray-300 focus:outline-blue-500 ${
-          task.isCompleted ? "line-through" : ""
-        }`}
-      >
-        {task.todoText}
-      </testarea> */}
-
-      <div className="flex gap-4 justify-center items-center p-4 bg-purple-700 text-white">
+      <div className="flex gap-4 justify-center items-center p-4 bg-[#b9dcf2] text-blue-700 rounded">
         <FontAwesomeIcon
           icon={faPenToSquare}
           className="hover:text-red-500"

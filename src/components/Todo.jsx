@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import Task from "./Task";
 import i18n from "./i18n.json";
 import { v4 as uuidv4 } from "uuid";
@@ -90,14 +90,17 @@ export default function Todo() {
   };
 
   return (
-    <div className="h-screen flex justify-center items-center">
-      <div className="w-full sm:w-4/5 h-full md:h-4/5 p-4 bg-gray-300 overflow-auto">
-        <h1 className="font-bold font-serif text-3xl text-black">Todo App</h1>
+    <div className="h-screen flex justify-center items-center p-8 ">
+      <div className="w-full sm:w-4/5 h-full md:h-4/5 p-4 bg-[#b9dcf2]  rounded  shadow-lg shadow-green-900 ">
+        <h1 className="font-bold font-serif text-3xl text-blue-700">
+          Todo App
+        </h1>
 
         <div>
           <select
             value={userSelectedLanguage}
             onChange={(e) => setUserSelectedLanguage(e.target.value)}
+            className=" mt-4 rounded bg-blue-700 px-4 py-1 text-white font-bold"
           >
             {LangEnum.map((language) => (
               <option key={language} value={language}>
@@ -110,6 +113,7 @@ export default function Todo() {
           <select
             value={userSelectedSortOption}
             onChange={(e) => setUserSelectedSortOption(e.target.value)}
+            className=" mt-2 rounded bg-blue-700 px-4 py-1 text-white font-bold"
           >
             {Object.keys(SortOptions).map((key) => (
               <option key={key} value={SortOptions[key]}>
@@ -119,60 +123,62 @@ export default function Todo() {
           </select>
         </div>
 
-        <div className="flex gap-2 mt-8">
+        <div className="flex gap-2 mt-8 ">
           <input
             type="text"
             placeholder="Add your new todo"
-            className="w-full p-4 text-xl font-medium"
+            className="w-full px-4 py-2 text-xl font-medium rounded shadow-md shadow-blue-400"
             value={userInputValue}
             onChange={(e) => setUserInputValue(e.target.value)}
           />
           <button
-            className={`py-4 px-6  bg-purple-800 text-white  font-semibold text-4xl hover:bg-purple-500 hover:text-black `}
+            className={`py-2 px-4  bg-blue-700 text-white  font-semibold text-4xl hover:bg-blue-500 hover:text-black `}
             onClick={() => addTaskHandler()}
           >
             +
           </button>
         </div>
-        <div className="bg-gray-100 mt-4 p-2 ">
-          {tasksList
-            ?.sort((a, b) => {
-              switch (userSelectedSortOption) {
-                case SortOptions.NEWEST_FIRST:
-                  return new Date(b.createdAt) - new Date(a.createdAt);
-                case SortOptions.OLDEST_FIRST:
-                  return new Date(a.createdAt) - new Date(b.createdAt);
-                case SortOptions.ALPHABETICAL:
-                  if (a.todoTask < b.todoTask) {
-                    return 1;
-                  }
-                  if (a.todoTask > b.todoTask) {
-                    return -1;
-                  }
+        <div className="overflow-auto bg-blue-700 mt-4 p-2 rounded">
+          <div className=" ">
+            {tasksList
+              ?.sort((a, b) => {
+                switch (userSelectedSortOption) {
+                  case SortOptions.NEWEST_FIRST:
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                  case SortOptions.OLDEST_FIRST:
+                    return new Date(a.createdAt) - new Date(b.createdAt);
+                  case SortOptions.ALPHABETICAL:
+                    if (a.todoText < b.todoText) {
+                      return -1;
+                    }
+                    if (a.todoText > b.todoText) {
+                      return 1;
+                    }
 
-                  return 0;
-                case SortOptions.ALPHABETICAL_REVERSE:
-                  if (b.todoTask < a.todoTask) {
-                    return -1;
-                  }
-                  if (b.todoTask > a.todoTask) {
-                    return 1;
-                  }
-                  return 0;
-              }
-            })
-            .map((task) => {
-              return (
-                <Task
-                  key={task.id}
-                  id={task.id}
-                  task={task}
-                  onCheckboxChange={checkboxChangeHandler}
-                  deleteTaskHandler={deleteTaskHandler}
-                  updateTaskHandler={updateTaskHandler}
-                />
-              );
-            })}
+                    return 0;
+                  case SortOptions.ALPHABETICAL_REVERSE:
+                    if (b.todoText < a.todoText) {
+                      return -1;
+                    }
+                    if (b.todoText > a.todoText) {
+                      return 1;
+                    }
+                    return 0;
+                }
+              })
+              .map((task) => {
+                return (
+                  <Task
+                    key={task.id}
+                    id={task.id}
+                    task={task}
+                    onCheckboxChange={checkboxChangeHandler}
+                    deleteTaskHandler={deleteTaskHandler}
+                    updateTaskHandler={updateTaskHandler}
+                  />
+                );
+              })}
+          </div>
         </div>
       </div>
     </div>
