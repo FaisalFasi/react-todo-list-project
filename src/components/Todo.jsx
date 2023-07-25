@@ -91,7 +91,7 @@ export default function Todo() {
 
   return (
     <div className="h-screen flex justify-center items-center p-8 ">
-      <div className="w-full sm:w-4/5 h-full md:h-4/5 p-4 bg-[#b9dcf2]  rounded  shadow-lg shadow-green-900 ">
+      <div className="w-full sm:w-4/5 h-full md:h-4/5 p-4 bg-[#b9dcf2]  rounded  shadow-lg shadow-green-900 overflow-auto ">
         <h1 className="font-bold font-serif text-3xl text-blue-700">
           Todo App
         </h1>
@@ -138,47 +138,45 @@ export default function Todo() {
             +
           </button>
         </div>
-        <div className="overflow-auto bg-blue-700 mt-4 p-2 rounded">
-          <div className=" ">
-            {tasksList
-              ?.sort((a, b) => {
-                switch (userSelectedSortOption) {
-                  case SortOptions.NEWEST_FIRST:
-                    return new Date(b.createdAt) - new Date(a.createdAt);
-                  case SortOptions.OLDEST_FIRST:
-                    return new Date(a.createdAt) - new Date(b.createdAt);
-                  case SortOptions.ALPHABETICAL:
-                    if (a.todoText < b.todoText) {
-                      return -1;
-                    }
-                    if (a.todoText > b.todoText) {
-                      return 1;
-                    }
+        <div className=" bg-blue-700 mt-4 p-2 rounded">
+          {tasksList
+            ?.sort((a, b) => {
+              switch (userSelectedSortOption) {
+                case SortOptions.NEWEST_FIRST:
+                  return new Date(b.createdAt) - new Date(a.createdAt);
+                case SortOptions.OLDEST_FIRST:
+                  return new Date(a.createdAt) - new Date(b.createdAt);
+                case SortOptions.ALPHABETICAL:
+                  if (a.todoText < b.todoText) {
+                    return -1;
+                  }
+                  if (a.todoText > b.todoText) {
+                    return 1;
+                  }
 
-                    return 0;
-                  case SortOptions.ALPHABETICAL_REVERSE:
-                    if (b.todoText < a.todoText) {
-                      return -1;
-                    }
-                    if (b.todoText > a.todoText) {
-                      return 1;
-                    }
-                    return 0;
-                }
-              })
-              .map((task) => {
-                return (
-                  <Task
-                    key={task.id}
-                    id={task.id}
-                    task={task}
-                    onCheckboxChange={checkboxChangeHandler}
-                    deleteTaskHandler={deleteTaskHandler}
-                    updateTaskHandler={updateTaskHandler}
-                  />
-                );
-              })}
-          </div>
+                  return 0;
+                case SortOptions.ALPHABETICAL_REVERSE:
+                  if (b.todoText < a.todoText) {
+                    return -1;
+                  }
+                  if (b.todoText > a.todoText) {
+                    return 1;
+                  }
+                  return 0;
+              }
+            })
+            .map((task) => {
+              return (
+                <Task
+                  key={task.id}
+                  id={task.id}
+                  task={task}
+                  onCheckboxChange={checkboxChangeHandler}
+                  deleteTaskHandler={deleteTaskHandler}
+                  updateTaskHandler={updateTaskHandler}
+                />
+              );
+            })}
         </div>
       </div>
     </div>
